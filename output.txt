@@ -1,0 +1,52 @@
+Task 1: POST /auth/login
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"your.email@example.com","password":"password123"}'
+
+Response:
+{"message":"OTP sent","loginSessionId":"flkns5"}
+
+Server Log:
+[OTP] Session flkns5 generated: 151970
+
+---
+
+Task 2: POST /auth/verify-otp
+curl -c cookies.txt -X POST http://localhost:3000/auth/verify-otp \
+  -H "Content-Type: application/json" \
+  -d '{"loginSessionId":"flkns5","otp":"151970"}'
+
+Response:
+{"message":"OTP verified","sessionId":"flkns5"}
+
+---
+
+Task 3: POST /auth/token
+curl -b cookies.txt -X POST http://localhost:3000/auth/token
+
+Response:
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvdXIuZW1haWxAZXhhbXBsZS5jb20iLCJzZXNzaW9uSWQiOiJmbGtuczUiLCJpYXQiOjE3NzA5NjE4MTAsImV4cCI6MTc3MDk2MjcxMH0.1WmV9p2UaK5XNzxzKyxhtQ2QDvxuGNvaLoWjJQ9Lz6A",
+    "token_type": "Bearer",
+    "expires_in": 900
+}
+
+---
+
+Task 4: GET /protected
+curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvdXIuZW1haWxAZXhhbXBsZS5jb20iLCJzZXNzaW9uSWQiOiJmbGtuczUiLCJpYXQiOjE3NzA5NjE4MTAsImV4cCI6MTc3MDk2MjcxMH0.1WmV9p2UaK5XNzxzKyxhtQ2QDvxuGNvaLoWjJQ9Lz6A" \
+  http://localhost:3000/protected
+
+Response:
+{
+    "message": "Access granted",
+    "user": {
+        "email": "your.email@example.com",
+        "sessionId": "flkns5",
+        "iat": 1770961810,
+        "exp": 1770962710
+    },
+    "success_flag": "FLAG-eW91ci5lbWFpbEBleGFtcGxlLmNvbV9DT01QTEVURURfQVNTSUdOTUVOVA=="
+}
+
+✅ AUTHENTICATION FLOW COMPLETED SUCCESSFULLY
